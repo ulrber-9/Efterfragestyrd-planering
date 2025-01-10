@@ -1,8 +1,0 @@
-numpy
-pandas
-rapidfuzz
-geopandas
-shapely
-matplotlib
-osmnx
-networkx
