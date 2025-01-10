@@ -6,7 +6,49 @@ Detta projekt innehåller en Python-skriptfil som:
 - Om OSM-data saknas, hämtar och bearbetar den relevant OSM-information.
 - Matchar på- och avstigningar för att skapa en OD-matris (Origin–Destination).
 
+Kort sagt utför skriptet en helhetsanalys för busstrafik från rå data (biljettvalideringar och realtidsinformation) till en färdig OD-matris. Du får möjlighet att se hur många som rest mellan olika hållplatser per dag.
+
 # Beskrivning av koden
+
+## Vilken indata behövs?
+
+- Du behöver uppdatera sökvägar i koden (t.ex. `mainPath`) och namnet på kommunen (`municipality_name`) för att matcha dina lokala filer. Det finns också ett antal andra parametrar som kan ändras.
+
+- **TicketValidations.csv**  
+  Innehåller biljettvalideringar (resenärs-ID, datum, tid, linjenummer, hållplatsnummer m.m.).
+
+- **Realtidsdata.csv**  
+  Realtidsinformation om bussars avgångar och ankomster, t.ex. planerad och faktisk avgångstid, linjenummer, hållplatsnummer.
+
+- **StopKey.csv**  
+  En nyckelfil över busshållplatser (ID, namn, koordinater i Sweref99 TM).
+  
+> Koden förväntar sig csv filer med komma ( , ) som avgränsare och punkt ( . ) för decimaler
+
+- **OSM-datafiler**  
+  - `<kommunnamn>_bus_stop_travel_times.csv` (restidsmatris mellan hållplatser)  
+  - `<kommunnamn>_osm_data.pkl` (pickle-fil med vägnät, byggnader, vattenvägar och busshållplatser)
+
+> Om dessa OSM-filer inte finns, försöker koden automatiskt generera dem via `bs.osm_data_run()` som finns i `OSM_BUS_STOP_PATHS.py` skriptet.
+
+---
+
+## Vilken utdata skapas?
+
+- **`Output_OD_Matrix.csv`**  
+  En OD-matris (Origin–Destination) per dag. Varje rad visar:
+  - `ValidationDate` – Datum för resorna  
+  - `BoardingStop` – Ursprungshållplats  
+  - `Final_AlightingStop` – Sluthållplats (efter ev. byten)  
+  - `count` – Antal resenärer
+
+- **(Eventuell) Visualisering**  
+  Om `Plot_Check` är True genereras en karta som visar vägnät, hållplatser och OD-linjer (med linjebredd beroende på resenärsflöde).
+
+- **Mellanfiler (debug)**  
+  Exempelvis `Itinerary.csv` eller `AlightingStop.csv` om du aktiverar vissa `to_csv()`-anrop i koden. Dessa är dock inte nödvändiga i huvudflödet.
+
+---
 
 ## Vad koden gör
 
@@ -52,47 +94,4 @@ Detta projekt innehåller en Python-skriptfil som:
 
 ---
 
-## Vilken indata behövs?
-
-- **TicketValidations.csv**  
-  Innehåller biljettvalideringar (resenärs-ID, datum, tid, linjenummer, hållplatsnummer m.m.).
-
-- **Realtidsdata.csv**  
-  Realtidsinformation om bussars avgångar och ankomster, t.ex. planerad och faktisk avgångstid, linjenummer, hållplatsnummer.
-
-- **StopKey.csv**  
-  En nyckelfil över busshållplatser (ID, namn, koordinater i Sweref99 TM).
-  
-> Koden förväntar sig csv filer med komma ( , ) som avgränsare och punkt ( . ) för decimaler
-
-- **OSM-datafiler**  
-  - `<kommunnamn>_bus_stop_travel_times.csv` (restidsmatris mellan hållplatser)  
-  - `<kommunnamn>_osm_data.pkl` (pickle-fil med vägnät, byggnader, vattenvägar och busshållplatser)
-
-> Om dessa OSM-filer inte finns, försöker koden automatiskt generera dem via `bs.osm_data_run()` (alltså: OSM_BUS_STOP_PATHS.py).
-
-> **Notera:** Du kan behöva uppdatera sökvägar i koden (t.ex. `mainPath`) och namnet på kommunen (`municipality_name`) för att matcha dina lokala filer.
-
----
-
-## Vilken utdata skapas?
-
-- **`Output_OD_Matrix.csv`**  
-  En OD-matris (Origin–Destination) per dag. Varje rad visar:
-  - `ValidationDate` – Datum för resorna  
-  - `BoardingStop` – Ursprungshållplats  
-  - `Final_AlightingStop` – Sluthållplats (efter ev. byten)  
-  - `count` – Antal resenärer
-
-- **(Eventuell) Visualisering**  
-  Om `Plot_Check` är True genereras en karta som visar vägnät, hållplatser och OD-linjer (med linjebredd beroende på resenärsflöde).
-
-- **Mellanfiler (debug)**  
-  Exempelvis `Itinerary.csv` eller `AlightingStop.csv` om du aktiverar vissa `to_csv()`-anrop i koden. Dessa är dock inte nödvändiga i huvudflödet.
-
----
-
-## Sammanfattning
-
-Kort sagt utför skriptet en helhetsanalys för busstrafik från rå data (biljettvalideringar och realtidsinformation) till en färdig OD-matris. Du får möjlighet att se hur många som rest mellan olika hållplatser per dag och även, om så önskas, en grafisk plot över nätverket och resandeströmmar.
 
