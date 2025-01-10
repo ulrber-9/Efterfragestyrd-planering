@@ -24,7 +24,7 @@ Detta projekt innehåller en Python-skriptfil som:
 
 3. **Läser in restidsmatris (StopMatrix) (steg 3)**  
    - Använder filen `<kommunnamn>_bus_stop_travel_times.csv` som innehåller restider och avstånd mellan hållplatser.  
-   - Denna kan vara förgenererad eller skapas i steg 2.
+   - Skapas i steg 2.
 
 4. **Förbehandlar realtidsdata (steg 4)**  
    - Rensar och kompletterar data: konverterar klockslag, fyller i saknade tider och skapar en kolumn för hållplatsordning (`StopSequence`).
@@ -48,7 +48,7 @@ Detta projekt innehåller en Python-skriptfil som:
    - Räknar hur många resenärer som rest mellan olika hållplatser per dag.
 
 11. **(Valfritt) Visualiserar data (steg 13)**  
-   - Om `Plot_Check` eller `plot_bool` är True, plottas bland annat vägnät, hållplatser, byggnader, vattenvägar och OD-linjer.
+   - Om `Plot_Check` är True, plottas bland annat vägnät, hållplatser, byggnader, vattenvägar och OD-linjer.
 
 ---
 
@@ -62,12 +62,14 @@ Detta projekt innehåller en Python-skriptfil som:
 
 - **StopKey.csv**  
   En nyckelfil över busshållplatser (ID, namn, koordinater i Sweref99 TM).
+  
+> Koden förväntar sig csv filer med komma ( , ) som avgränsare och punkt ( . ) för decimaler
 
 - **OSM-datafiler**  
   - `<kommunnamn>_bus_stop_travel_times.csv` (restidsmatris mellan hållplatser)  
   - `<kommunnamn>_osm_data.pkl` (pickle-fil med vägnät, byggnader, vattenvägar och busshållplatser)
 
-> Om dessa OSM-filer inte finns, försöker koden automatiskt generera dem via `bs.osm_data_run()` (OSM_BUS_STOP_PATHS.py).
+> Om dessa OSM-filer inte finns, försöker koden automatiskt generera dem via `bs.osm_data_run()` (alltså: OSM_BUS_STOP_PATHS.py).
 
 > **Notera:** Du kan behöva uppdatera sökvägar i koden (t.ex. `mainPath`) och namnet på kommunen (`municipality_name`) för att matcha dina lokala filer.
 
