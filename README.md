@@ -16,6 +16,8 @@ Detta projekt innehåller en Python-skriptfil som:
      - **Realtidsdata** (bussars ankomst- och avgångstider)
      - **StopKey** (nyckeldata för busshållplatser)
 
+> Koden förväntar sig csv filer med komma ( , ) som avgränsare och punkt ( . ) för decimaler
+
 2. **Kontrollerar och kör OSM-datahämtning (steg 2)**  
    - Ser efter om redan existerande OSM-datafiler (vägar, hållplatser, restidsmatris m.m.) finns sparade.  
    - Om saknas, kör funktionen `bs.osm_data_run` för att hämta och bearbeta OpenStreetMap-data för vald kommun.
