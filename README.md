@@ -3,7 +3,7 @@
 Detta projekt innehåller en Python-skriptfil som:
 
 - Laddar in busstrafikdata (biljettvalideringar & realtidsdata).
-- Om OSM-data saknas, hämtar och bearbetar den relevant OSM-information.
+- Om Open Street Map (OSM-) data saknas, hämtar och bearbetar relevant OSM-information.
 - Matchar på- och avstigningar för att skapa en OD-matris (Origin–Destination).
 
 Kort sagt utför skriptet en helhetsanalys för busstrafik från rå data (biljettvalideringar och realtidsinformation) till en färdig OD-matris. Du får möjlighet att se hur många som rest mellan olika hållplatser per dag.
