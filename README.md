@@ -94,4 +94,9 @@ Kort sagt utför skriptet en helhetsanalys för busstrafik från rå data (bilje
 
 ---
 
+## Hur kör man koden
+
+För att koden ska fungera behövs Python version 3.10 +
+Du måste dessutom installera ett antal bibliotek. Använd kommandot "pip install -r requirements.txt" i kommandotolken för detta!
+
 
