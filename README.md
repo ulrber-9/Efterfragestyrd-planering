@@ -44,7 +44,7 @@ Kort sagt utför skriptet en helhetsanalys för busstrafik från rå data (bilje
   - `count` – Antal resenärer
 
 - **(Eventuell) Visualisering**  
-  Om `Plot_Check` är True genereras en karta som visar vägnät, hållplatser och OD-linjer (med linjebredd beroende på resenärsflöde).
+  Export_to_SHP skriptet exportar OD matrisen ifrån Excel till en shapefile samt skapar en visuell karta som kan öppnas i Google Chrome
 
 - **Mellanfiler (debug)**  
   Exempelvis `Itinerary.csv` eller `AlightingStop.csv` om du aktiverar vissa `to_csv()`-anrop i koden. Dessa är dock inte nödvändiga i huvudflödet.
