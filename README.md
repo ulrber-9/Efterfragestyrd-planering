@@ -24,6 +24,7 @@ Kort sagt utför skriptet en helhetsanalys för busstrafik från rå data (bilje
   En nyckelfil över busshållplatser (ID, namn, koordinater i Sweref99 TM).
   
 > Koden förväntar sig csv filer med komma ( , ) som avgränsare och punkt ( . ) för decimaler
+> Koden förväntar sig också att csv filerna har "encoding='utf-8-sig'"
 
 - **OSM-datafiler**  
   - `<kommunnamn>_bus_stop_travel_times.csv` (restidsmatris mellan hållplatser)  
