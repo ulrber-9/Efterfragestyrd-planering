@@ -797,8 +797,9 @@ def main(plot_bool=True):
 
     # 10. Calculate headways (service intervals)
     AlightingStop = calculate_headways(AlightingStop, Realtidsdata, realtime_cols)
-    AlightingStop.to_csv(os.path.join(mainPath, AlightingStop_output_file), sep=';')
-    print('\nAlightingStops Created and Exported.\n')
+    
+    #AlightingStop.to_csv(os.path.join(mainPath, AlightingStop_output_file), sep=';')
+    #print('\nAlightingStops Created and Exported.\n')
 
     # 11. Determine final alighting stops considering transfers
     Itinerary = determine_final_alighting_stops(AlightingStop)

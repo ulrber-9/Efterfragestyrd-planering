@@ -204,7 +204,6 @@ for _, row in bus_stops_gdf.iterrows():
     ).add_to(m)
 
 # Add OD matrix flows
-od_lines = []
 for _, row in OD_gdf.iterrows():
 
     coords = list(row.geometry.coords)  # This is a list of (longitude, latitude) tuples
@@ -214,9 +213,8 @@ for _, row in OD_gdf.iterrows():
         color=row["color"],
         weight=row["width"],
         opacity=0.7
-    )
-    line.add_to(m)
-    od_lines.append(line)
+    ).add_to(m)
+
 
 # Save the map
 m.save(os.path.join(output_dir, "od_matrix_map.html" ))

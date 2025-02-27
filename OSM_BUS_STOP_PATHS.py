@@ -36,6 +36,8 @@ def osm_data_run(municipality_name, speed=5, max_distance=1000, plot_check=True,
         buildings = ox.features_from_place(municipality_name, tags={"building": True})
         waterways = ox.features_from_place(municipality_name, tags={"waterway": True})
 
+        speed = speed/3.6 # From Km/h to m/s
+
         if staion_data.empty:
 
             bus_stops = ox.features_from_place(municipality_name, tags={"highway": "bus_stop", "public_transport": "platform"})
