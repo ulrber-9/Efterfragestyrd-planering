@@ -114,7 +114,7 @@ def run_osm_data_if_needed(municipality_name, output_folder, speed, max_distance
         print("\nOSM data generation completed.\n")
 
 
-def load_data(main_path, ticket_file, realtime_file, stopkey_file):
+def load_data(main_path, ticket_file, realtime_file, stopkey_file,station_columns_names):
     """
     Load Ticket Validations, Realtime data, and StopKey data from CSV files into DataFrames.
     Optionally filter lines if `only_select_lines` is set to True.
@@ -139,9 +139,9 @@ def load_data(main_path, ticket_file, realtime_file, stopkey_file):
     Stopkeydata : pd.DataFrame
         Stop key dataset.
     """
-    TicketValidations = pd.read_csv(os.path.join(main_path, ticket_file))
-    Realtidsdata = pd.read_csv(os.path.join(main_path, realtime_file))
-    Stopkeydata = pd.read_csv(os.path.join(main_path, stopkey_file))
+    TicketValidations = pd.read_csv(os.path.join(main_path, ticket_file),encoding='utf-8-sig')
+    Realtidsdata = pd.read_csv(os.path.join(main_path, realtime_file),encoding='utf-8-sig')
+    Stopkeydata = pd.read_csv(os.path.join(main_path, stopkey_file),encoding='utf-8-sig')
 
     # If desired, filter only the specified lines
     if only_select_lines:
@@ -747,8 +747,10 @@ def main(plot_bool=True):
         mainPath,
         ticket_validations_file,
         realtidsdata_file,
-        stopkey_file
+        stopkey_file,
+        station_columns_names=station_location_cols
     )
+    print('\nStep 1 done\n')
 
     # 2. Run OSM data extraction if needed
     run_osm_data_if_needed(
@@ -760,12 +762,16 @@ def main(plot_bool=True):
         station_location_cols
     )
 
+    print('\nStep 2 done\n')
+
     # 3. Load precomputed StopMatrix (travel times/distances between stops)
     stop_matrix_path = os.path.join(
         mainPath,
         f"{municipality_name}_bus_stop_travel_times.csv"
     )
     StopMatrix = pd.read_csv(stop_matrix_path, sep=';')
+
+    
 
     # Rename columns to align with usage
     StopMatrix.rename(
@@ -777,32 +783,39 @@ def main(plot_bool=True):
         inplace=True
     )
 
+    print('\nStep 3 done\n')
+
     # 4. Prepare and clean Realtidsdata
     Realtidsdata = prepare_realtidsdata(Realtidsdata, realtime_cols)
+    print('\nStep 4 done\n')
 
     # 5. Prepare and clean TicketValidations
     TicketValidations = prepare_ticket_validations(TicketValidations, ticket_cols)
+    print('\nStep 5 done\n')
 
     # 6. Create time-expanded stop combinations (trip segments)
     stopcomb_times = create_stop_combinations(Realtidsdata, realtime_cols)
+    print('\nStep 6 done\n')
 
     # 7. For each ticket validation, find possible target stops
     TicketValidations_target = get_target_stops(TicketValidations, StopMatrix)
+    print('\nStep 7 done\n')
 
     # 8. Generate a DataFrame of possible target stops
     PossibleTargetStops = generate_possible_targets(TicketValidations_target)
-
+    print('\nStep 8 done\n')
     # 9. Match these targets with actual trips to identify actual alighting stops
     AlightingStop = match_targets_to_trips(PossibleTargetStops, stopcomb_times)
-
+    print('\nStep 9 done, next one might take some time\n')
     # 10. Calculate headways (service intervals)
     AlightingStop = calculate_headways(AlightingStop, Realtidsdata, realtime_cols)
-    
+    print('\nStep 10 done\n')    
     #AlightingStop.to_csv(os.path.join(mainPath, AlightingStop_output_file), sep=';')
     #print('\nAlightingStops Created and Exported.\n')
 
     # 11. Determine final alighting stops considering transfers
     Itinerary = determine_final_alighting_stops(AlightingStop)
+    print('\nStep 11 done\n') 
 
     # 12. Create OD matrix by day from final itineraries
     OD_matrix_By_Day = create_od_matrix(Itinerary)
@@ -810,7 +823,8 @@ def main(plot_bool=True):
         OD_matrix_By_Day['BoardingStop'] != OD_matrix_By_Day['Final_AlightingStop']
     ]
     OD_matrix_By_Day.to_csv(os.path.join(mainPath, output_od_matrix_file), sep=';')
-    print('\nOD Matrix Created and Exported.\n')
+    print('\nStep 12 done\n')
+    print('\nOD Matrix Created and Exported. Program finsihed\n')
 
     # 13. (Optional) Plotting
     if plot_bool:

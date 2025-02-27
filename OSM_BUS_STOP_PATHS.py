@@ -40,6 +40,10 @@ def osm_data_run(municipality_name, speed=5, max_distance=1000, plot_check=True,
 
         if staion_data.empty:
 
+
+            print('no station data')
+            return
+
             bus_stops = ox.features_from_place(municipality_name, tags={"highway": "bus_stop", "public_transport": "platform"})
             # Get bus stop coordinates
             bus_stop_coords = bus_stops.geometry.apply(get_coords).dropna()

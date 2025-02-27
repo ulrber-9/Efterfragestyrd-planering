@@ -73,7 +73,6 @@ OD_with_coords = OD_with_coords.rename(columns={
     'count': 'trips_day'
 })
 
-
 # Group by stop pairs and sum counts across all ValidationDate values
 OD_with_coords["total_trips_for_all_days"] = OD_with_coords.groupby(["BoardingStop", "Final_AlightingStop"])["trips_day"].transform("sum")
 
