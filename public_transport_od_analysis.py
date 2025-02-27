@@ -17,7 +17,7 @@ import osmnx as ox
 municipality_name = 'Alingsås kommun'
 walking_speed = 5       # km/h - used to calculate potential walking travel times or limits
 limit_distance = 500    # m - maximum allowed walking distance
-Plot_Check = True       # Whether to plot final results or not
+Plot_Check = False       # Whether to plot final results or not
 
 only_select_lines = True
 only_these_lines = [6570, 6571, 6572, 6573, 6574]
@@ -25,7 +25,7 @@ only_these_lines = [6570, 6571, 6572, 6573, 6574]
 # Data Paths
 mainPath = r"C:/Users/CJ/OneDrive - Lund University/Lund/Ulrik projekt/Data/Västtrafik/Originalfiler/"
 
-# Input File Names
+# Input File Names These need to have a comma (,) as seperator and not a semi-comma (;)
 ticket_validations_file = "TicketValidations.csv"
 realtidsdata_file = "Realtidsdata.csv"
 stopkey_file = "StopKey.csv"
@@ -60,6 +60,7 @@ station_location_cols = {
 
 # Output File Names
 output_od_matrix_file = "Output_OD_Matrix.csv"
+AlightingStop_output_file = "Output_AlightingStop_file.csv"
 
 
 ############################################
@@ -796,6 +797,8 @@ def main(plot_bool=True):
 
     # 10. Calculate headways (service intervals)
     AlightingStop = calculate_headways(AlightingStop, Realtidsdata, realtime_cols)
+    AlightingStop.to_csv(os.path.join(mainPath, AlightingStop_output_file), sep=';')
+    print('\nAlightingStops Created and Exported.\n')
 
     # 11. Determine final alighting stops considering transfers
     Itinerary = determine_final_alighting_stops(AlightingStop)
