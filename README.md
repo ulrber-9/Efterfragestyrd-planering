@@ -92,6 +92,7 @@ Kort sagt utför skriptet en helhetsanalys för busstrafik från rå data (bilje
 
 11. **(Valfritt) Visualiserar data (steg 13)**  
    - Om `Plot_Check` är True, plottas bland annat vägnät, hållplatser, byggnader, vattenvägar och OD-linjer.
+   - Det finns också ett Export_to_SHP skript med fler visualiseraringar samt export till shapefil
 
 ---
 
@@ -99,5 +100,6 @@ Kort sagt utför skriptet en helhetsanalys för busstrafik från rå data (bilje
 
 >För att koden ska fungera behövs Python version 3.10+
 >Du måste dessutom installera ett antal bibliotek. Använd kommandot "pip install -r requirements.txt" i kommandotolken för detta!
+>Se till att alla csv filer har rätt "encoding". Enklast görs detta genom att spara data som .csv ifrån Excel
 
 
