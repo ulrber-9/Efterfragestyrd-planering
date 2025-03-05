@@ -36,15 +36,22 @@ def osm_data_run(municipality_name, speed=5, max_distance=1000, plot_check=True,
         buildings = ox.features_from_place(municipality_name, tags={"building": True})
         waterways = ox.features_from_place(municipality_name, tags={"waterway": True})
 
-        speed = speed/3.6 # From Km/h to m/s
-
-        if staion_data.empty:
-
-
-            print('no station data')
+        if G_roads is None:
+            print('No road data, something is strange, check the name of the area in OSM, it need to be exact')
             return
 
+        speed = speed/3.6 # From Km/h to m/s
+
+        if staion_data is None:
+
+            print('no station data, getting station data from OSM instead!')
+
             bus_stops = ox.features_from_place(municipality_name, tags={"highway": "bus_stop", "public_transport": "platform"})
+            
+            if bus_stops is None:
+                print('No bus stop data, something is strange, check the name of the area in OSM, it need to be exact')
+                return
+
             # Get bus stop coordinates
             bus_stop_coords = bus_stops.geometry.apply(get_coords).dropna()
             bus_stop_nodes = [ox.distance.nearest_nodes(G_roads, X=lon, Y=lat) for lat, lon in bus_stop_coords]
@@ -82,6 +89,11 @@ def osm_data_run(municipality_name, speed=5, max_distance=1000, plot_check=True,
 
         # Calculate travel times between bus stops
         if not only_download:
+
+            if bus_stop_nodes is None:
+                print('No bus stop data, something is strange, check the name of the area in OSM, it need to be exact')
+                return
+
             for i in range(len(bus_stop_nodes)):
 
                 percentage_complete = int(i / len(bus_stop_nodes) * 100)
@@ -96,7 +108,7 @@ def osm_data_run(municipality_name, speed=5, max_distance=1000, plot_check=True,
                         distance = reachable_nodes[bus_stop_nodes[j]]
                         travel_time = distance / speed # m / m/s = s
 
-                        if staion_data.empty:
+                        if staion_data is None:
                             # Get bus stop info
                             bus_stop_i_name = bus_stops.iloc[i]['name']
                             bus_stop_i_ref = bus_stops.iloc[i]['ref']
