@@ -60,7 +60,7 @@ station_location_cols = {
 
 # Output File Names
 output_od_matrix_file = "Output_OD_Matrix.csv"
-AlightingStop_output_file = "Output_AlightingStop_file.csv"
+Transfer_output_file = "Output_Transfer_file.csv"
 
 
 ############################################
@@ -806,16 +806,39 @@ def main(plot_bool=True):
     print('\nStep 8 done\n')
     # 9. Match these targets with actual trips to identify actual alighting stops
     AlightingStop = match_targets_to_trips(PossibleTargetStops, stopcomb_times)
-    print('\nStep 9 done, next one might take some time\n')
+    print('\nStep 9 done, next one might take some time. The warning is OK\n')
     # 10. Calculate headways (service intervals)
     AlightingStop = calculate_headways(AlightingStop, Realtidsdata, realtime_cols)
     print('\nStep 10 done\n')    
-    #AlightingStop.to_csv(os.path.join(mainPath, AlightingStop_output_file), sep=';')
-    #print('\nAlightingStops Created and Exported.\n')
 
     # 11. Determine final alighting stops considering transfers
     Itinerary = determine_final_alighting_stops(AlightingStop)
+
+    ### Doing the transfer calculations and exporting
+    df = Itinerary.copy()
+    # Filter where Act_Transfer == 2
+    df_transfers = df[df["Act_Transfer"] == 2].drop(columns=[ticket_cols["traveller_id"]])
+
+    # Sort by validation date and stop area name
+    df_transfers_sorted = df_transfers.sort_values(by=[ticket_cols["validation_date"], realtime_cols["stop_area_name"]])
+
+    # Frequency count by validation date and stop area name
+    transfer_stops_date = (
+        df_transfers_sorted.groupby(ticket_cols["validation_date"])[realtime_cols["stop_area_name"]]
+        .value_counts()
+        .reset_index(name="count")
+    )
+
+    # Sort by stop area name
+    df_transfers_sorted2 = df_transfers.sort_values(by=[realtime_cols["stop_area_name"]])
+
+    # Frequency count by stop area name
+    transfer_stops = df_transfers_sorted2[realtime_cols["stop_area_name"]].value_counts().reset_index()
+    transfer_stops.columns = [realtime_cols["stop_area_name"], "count"]
+    transfer_stops.to_csv(os.path.join(mainPath, Transfer_output_file), sep=';')
+    print('\nTransfer File Created and Exported.\n')
     print('\nStep 11 done\n') 
+
 
     # 12. Create OD matrix by day from final itineraries
     OD_matrix_By_Day = create_od_matrix(Itinerary)
