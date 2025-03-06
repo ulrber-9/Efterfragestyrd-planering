@@ -819,24 +819,28 @@ def main(plot_bool=True):
     # Filter where Act_Transfer == 2
     df_transfers = df[df["Act_Transfer"] == 2].drop(columns=[ticket_cols["traveller_id"]])
 
-    # Sort by validation date and stop area name
-    df_transfers_sorted = df_transfers.sort_values(by=[ticket_cols["validation_date"], realtime_cols["stop_area_name"]])
+    # Group by stop area name, stop_area_number, and ValidationDate
+    transfer_stops = df_transfers.groupby([
+        realtime_cols["stop_area_name"], 
+        realtime_cols["stop_area_number"],  
+        "ValidationDate"
+    ]).size().reset_index(name="count")
 
-    # Frequency count by validation date and stop area name
-    transfer_stops_date = (
-        df_transfers_sorted.groupby(ticket_cols["validation_date"])[realtime_cols["stop_area_name"]]
-        .value_counts()
-        .reset_index(name="count")
-    )
+    # Rename columns for clarity
+    transfer_stops.columns = [
+        "StopAreaName",
+        "StopAreaNumber",  # Changed column name to match the new field
+        "ValidationDate", 
+        "TransferCount"
+    ]
 
-    # Sort by stop area name
-    df_transfers_sorted2 = df_transfers.sort_values(by=[realtime_cols["stop_area_name"]])
+    # Sort by ValidationDate and then by stop area name
+    transfer_stops = transfer_stops.sort_values(by=["ValidationDate", "StopAreaName"])
 
-    # Frequency count by stop area name
-    transfer_stops = df_transfers_sorted2[realtime_cols["stop_area_name"]].value_counts().reset_index()
-    transfer_stops.columns = [realtime_cols["stop_area_name"], "count"]
-    transfer_stops.to_csv(os.path.join(mainPath, Transfer_output_file), sep=';')
-    print('\nTransfer File Created and Exported.\n')
+    # Export to a single CSV file
+    transfer_stops.to_csv(os.path.join(mainPath, Transfer_output_file), sep=';', index=False)
+    print('\nTransfer File Created and Exported with Stop Name, Stop Area Number, and Date.\n')
+    
     print('\nStep 11 done\n') 
 
 
